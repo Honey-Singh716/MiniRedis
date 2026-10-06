@@ -4,11 +4,13 @@
 
 
 RedisStore::RedisStore(int capacity)
-    : store(capacity) {
+    : store(capacity),
+    lruCache(capacity){
 }
 
 void RedisStore::set(string key, string value) {
     store.set(key, value);
+    lruCache.put(key, value);
     expiryMap.erase(key);
     getNextVersion(key);
 }
@@ -16,6 +18,8 @@ void RedisStore::set(string key, string value) {
 void RedisStore::set(string key, string value, long long ttl){
     
     store.set(key, value);
+    
+    lruCache.put(key, value);
     
     long long currentTime = chrono::duration_cast<chrono::seconds>(
             chrono::system_clock::now().time_since_epoch()
@@ -32,8 +36,22 @@ void RedisStore::set(string key, string value, long long ttl){
 }
 
 string RedisStore::get(string key) {
+
     processExpiredKeys();
-    return store.get(key);
+
+    string value = lruCache.get(key);
+
+    if(value != "(nil)") {
+        return value;
+    }
+
+    value = store.get(key);
+
+    if(value != "(nil)") {
+        lruCache.put(key, value);
+    }
+
+    return value;
 }
 
 bool RedisStore::del(string key) {
@@ -41,6 +59,7 @@ bool RedisStore::del(string key) {
 
     if(deleted) {
         versionMap[key]++;
+        lruCache.remove(key);
     }
     
     expiryMap.erase(key);
@@ -75,6 +94,7 @@ void RedisStore::processExpiredKeys() {
 
             store.del(topExpiry.key);
             versionMap.erase(it);
+            lruCache.remove(topExpiry.key);
             expiryMap.erase(topExpiry.key);
         }
 
