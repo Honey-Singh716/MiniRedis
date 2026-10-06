@@ -48,5 +48,6 @@ public:
     void set(string key, string value);
     string get(string key);
     bool del(string key);
+    bool exists(string key);
 };
 

@@ -1,5 +1,5 @@
 #include <iostream>
-#include "HashTable.h"
+#include "../include/HashTable.h"
 
 
 
@@ -137,4 +137,20 @@ string HashTable::get(string key){
     }
 
     return "(nil)";
+}
+
+
+bool HashTable::exists(string key){
+    int index = hashKey(key);
+    
+    Node* current = table[index];
+
+    while(current != NULL){
+        if(current->key == key){
+            return true;
+        }
+       
+        current = current->next;
+    }
+    return false;
 }

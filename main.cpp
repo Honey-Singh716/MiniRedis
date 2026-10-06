@@ -1,26 +1,32 @@
 #include <iostream>
-#include "RedisStore.h"
+#include <string>
 
+#include "include/RedisStore.h"
+#include "include/CommandParser.h"
 
 using namespace std;
 
 int main() {
 
-    RedisStore redis(4);
+    RedisStore store(10);
+    CommandParser parser;
 
-    redis.set("name", "Honey");
-    redis.set("age", "18");
+    string command;
 
-    cout << redis.get("name") << endl;
-    cout << redis.get("age") << endl;
+    while(true) {
 
-    redis.set("name", "Singh");
+        cout << "MiniRedis> ";
 
-    cout << redis.get("name") << endl;
+        getline(cin, command);
 
-    redis.del("age");
+        if(command == "EXIT") {
+            break;
+        }
 
-    cout << redis.get("age") << endl;  
+        vector<string> tokens = parser.tokenize(command);
+
+        parser.executeCommand(tokens, store);
+    }
 
     return 0;
 }
