@@ -1,31 +1,13 @@
+# VS Code
+.vscode/
+
+# Compiled executable
 *.exe
 
-# Build artifacts
-*.dll
+# C++ object files
+*.o
 *.obj
-*.pdb
-*.ilk
-*.lib
+
+# Build directories
+build/
 bin/
-obj/
-Debug/
-Release/
-
-# IDE files
-.vs/
-.vscode/
-*.user
-*.suo
-
-# Logs and temporary files
-*.log
-*.tmp
-*.temp
-
-# OS files
-.DS_Store
-Thumbs.db
-
-# Environment files
-.env
-.env.*
