@@ -8,6 +8,8 @@
 
 #include "HashTable.h"
 #include "TTLManager.h"
+#include "LRUCache.h"
+#include "Persistence.h"
 
 using namespace std;
 
@@ -15,6 +17,8 @@ class RedisStore {
 private:
     HashTable store;
     TTLManager ttlManager;
+    LRUCache lruCache;
+    Persistence persistence;
 
     unordered_map<string, long long> versionMap;
     unordered_map<string, long long> expiryMap;
@@ -24,6 +28,8 @@ private:
 public:
     RedisStore(int capacity);
 
+    void load(const string& filename);
+    void save(const string& filename);
     void processExpiredKeys();
     bool exists(string key);
     long long get_ttl(string key);

@@ -154,3 +154,25 @@ bool HashTable::exists(string key){
     }
     return false;
 }
+
+vector<pair<string, string>> HashTable::getAll() {
+
+    vector<pair<string, string>> data;
+
+    for(int i = 0; i < capacity; i++) {
+
+        Node* current = table[i];
+
+        while(current != nullptr) {
+
+            data.push_back({
+                current->key,
+                current->value
+            });
+
+            current = current->next;
+        }
+    }
+
+    return data;
+}

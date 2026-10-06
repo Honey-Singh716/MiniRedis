@@ -130,3 +130,82 @@ long long RedisStore::get_ttl(string key) {
     return expiryTime - currentTime;
   
 }
+
+void RedisStore::save(const string& filename) {
+
+    processExpiredKeys();
+
+    vector<pair<string, string>> data = store.getAll();
+
+    vector<PersistentEntry> persistentData;
+
+    for(const auto& entry : data) {
+
+        PersistentEntry persistentEntry;
+
+        persistentEntry.key = entry.first;
+        persistentEntry.value = entry.second;
+
+        auto it = expiryMap.find(entry.first);
+
+        if(it == expiryMap.end()) {
+            persistentEntry.expiryTime = -1;
+        }
+        else {
+            persistentEntry.expiryTime = it->second;
+        }
+
+        persistentData.push_back(persistentEntry);
+    }
+
+    persistence.save(persistentData, filename);
+}
+
+void RedisStore::load(const string& filename) {
+
+    vector<PersistentEntry> data = persistence.load(filename);
+
+    long long currentTime =
+        chrono::duration_cast<chrono::seconds>(
+            chrono::system_clock::now().time_since_epoch()
+        ).count();
+
+    for(const auto& entry : data) {
+
+        // Already expired while Redis was offline
+        if(entry.expiryTime != -1 &&
+           entry.expiryTime <= currentTime) {
+            continue;
+        }
+
+        // Restore actual data
+        store.set(entry.key, entry.value);
+
+        // Restore cache
+        lruCache.put(entry.key, entry.value);
+
+        // Create a fresh version
+        long long version = getNextVersion(entry.key);
+
+        // No TTL
+        if(entry.expiryTime == -1) {
+            continue;
+        }
+
+        // Restore TTL metadata
+        expiryMap[entry.key] = entry.expiryTime;
+
+        // Restore expiry into min-heap
+        ttlManager.addExpiry(
+            entry.expiryTime,
+            entry.key,
+            version
+        );
+    }
+}
+
+
+
+
+
+

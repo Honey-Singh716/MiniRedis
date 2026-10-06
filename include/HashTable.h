@@ -38,6 +38,8 @@ public:
         this->table.resize(capacity, NULL);
     }
 
+    vector<pair<string, string>> getAll();
+
     ~HashTable();
 
     HashTable(const HashTable&) = delete;

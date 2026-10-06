@@ -25,9 +25,16 @@ private:
     LRUNode* head;
     LRUNode* tail;
 
+
+    void removeNode(LRUNode* node);
+    void insertAtHead(LRUNode* node);
+    void moveToHead(LRUNode* node);
+    void removeLRU();
+
 public:
     LRUCache(int capacity);
-
+    
+    void remove(string key);
     string get(string key);
     void put(string key, string value);
 };

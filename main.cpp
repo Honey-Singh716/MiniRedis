@@ -1,8 +1,8 @@
-#include <iostream>
-#include <string>
-
 #include "include/RedisStore.h"
 #include "include/CommandParser.h"
+
+#include <iostream>
+#include <string>
 
 using namespace std;
 
@@ -23,7 +23,8 @@ int main() {
             break;
         }
 
-        vector<string> tokens = parser.tokenize(command);
+        vector<string> tokens =
+            parser.tokenize(command);
 
         parser.executeCommand(tokens, store);
     }
