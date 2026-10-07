@@ -36,12 +36,20 @@ bool CommandParser::isValidCommand(vector<string> tokens){
     string command = tokens[0];
 
     if(command != "SET" &&
-       command != "GET" &&
-       command != "DEL" &&
-       command != "EXISTS" &&
-       command != "TTL") {
-        return false;
+        command != "GET" &&
+        command != "DEL" &&
+        command != "EXISTS" &&
+        command != "TTL" &&
+        command != "SAVE" &&
+        command != "LOAD") {
+            return false;
     }
+
+    if(command == "SAVE" ||
+        command == "LOAD") {
+
+            return tokens.size() == 1;
+        }
 
     if(command == "SET") {
 
@@ -141,14 +149,27 @@ void CommandParser::executeCommand(vector<string> tokens, RedisStore& store) {
         string key = tokens[1];
         long long ttl = store.get_ttl(key);
 
-        if(ttl == -1) {
+        if(ttl == -2) {
             cout << "Key does not exist" << endl;
         }
-        else if(ttl == -2) {
+        else if(ttl == -1) {
             cout << "Key exists but has no associated TTL" << endl;
         }
         else {
             cout << "TTL = " << ttl << " seconds" << endl;
         }
     }
+
+    if(command == "SAVE") {
+
+        store.save("miniredis.db");
+
+        cout << "OK" << endl;
+    }
+
+    if(command == "LOAD"){
+        store.load("miniredis.db");
+        cout<< "OK" << endl;
+    }
+
 }

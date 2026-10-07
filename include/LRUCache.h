@@ -34,6 +34,8 @@ private:
 public:
     LRUCache(int capacity);
     
+    ~LRUCache();
+    
     void remove(string key);
     string get(string key);
     void put(string key, string value);

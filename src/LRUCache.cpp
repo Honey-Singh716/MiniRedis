@@ -14,6 +14,20 @@ LRUCache::LRUCache(int capacity){
     this->tail = nullptr;
 }
 
+LRUCache::~LRUCache() {
+
+    LRUNode* current = head;
+
+    while(current != nullptr) {
+
+        LRUNode* next = current->next;
+
+        delete current;
+
+        current = next;
+    }
+}
+
 void LRUCache::insertAtHead(LRUNode* node) {
 
     node->prev = nullptr;
