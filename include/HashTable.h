@@ -29,7 +29,7 @@ private:
 
     double loadFactor();
 
-    int hashKey(string key);
+    int hashKey(const string& key);
     void rehash();
 public:
     HashTable(int capacity){

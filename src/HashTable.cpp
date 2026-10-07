@@ -14,15 +14,16 @@ HashTable::~HashTable() {
     }
 }
 
-int HashTable::hashKey(string key){
-    int hash = 0;
+int HashTable::hashKey(const string& key) {
 
-    for(int i = 0;i<key.length();i++){
-        hash = hash*31 + key[i];
+    unsigned long long hash = 0;
+
+    for(char c : key) {
+        hash = hash * 31 + static_cast<unsigned char>(c);
     }
-    return hash % capacity;
-}
 
+    return static_cast<int>(hash % capacity);
+}
 
 double HashTable::loadFactor(){
     return (double)size/capacity;
@@ -30,8 +31,7 @@ double HashTable::loadFactor(){
 
 
 void HashTable::rehash(){
-    cout<<"Rehashing..."<<endl;
-    
+   
     int oldcapacity = capacity;
     capacity *= 2;
 

@@ -58,7 +58,14 @@ vector<PersistentEntry> Persistence::load(const string& filename) {
         string expiryString =
             line.substr(secondSeparator + 1);
 
-        long long expiryTime = stoll(expiryString);
+       long long expiryTime;
+
+        try {
+            expiryTime = stoll(expiryString);
+        }
+        catch(...) {
+            continue;
+        }
 
         data.push_back({
             key,

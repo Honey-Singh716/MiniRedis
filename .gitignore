@@ -1,13 +1,21 @@
-# VS Code
-.vscode/
-
-# Compiled executable
+# Executables
 *.exe
+*.out
 
-# C++ object files
+# Object files
 *.o
 *.obj
 
 # Build directories
 build/
 bin/
+
+# VS Code
+.vscode/
+
+# Debug files
+*.pdb
+*.ilk
+
+# Database generated at runtime
+miniredis.db
